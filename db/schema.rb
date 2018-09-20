@@ -10,21 +10,21 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_20_015351) do
-
-  create_table "bus_line_main_streets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
-    t.bigint "bus_line_id", null: false
-    t.bigint "main_street_id", null: false
-    t.index ["bus_line_id", "main_street_id"], name: "index_bus_line_main_streets_on_bus_line_id_and_main_street_id"
-    t.index ["bus_line_id"], name: "index_bus_line_main_streets_on_bus_line_id"
-    t.index ["main_street_id"], name: "index_bus_line_main_streets_on_main_street_id"
-  end
+ActiveRecord::Schema.define(version: 2018_09_20_134509) do
 
   create_table "bus_lines", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "code"
   end
 
   create_table "main_streets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "bus_line_id", null: false
+    t.bigint "street_id", null: false
+    t.index ["bus_line_id", "street_id"], name: "index_main_streets_on_bus_line_id_and_street_id", unique: true
+    t.index ["bus_line_id"], name: "index_main_streets_on_bus_line_id"
+    t.index ["street_id"], name: "index_main_streets_on_street_id"
+  end
+
+  create_table "streets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "code"
     t.string "name"
     t.string "city"

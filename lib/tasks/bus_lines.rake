@@ -6,12 +6,32 @@ namespace :bus_lines do
     pp client.operations
   end
   
-  # pp client.operations
+  desc "fetch entities"
+  task fetch_entities: :environment do
+    client = Savon.client(wsdl: 'http://clswbsas.smartmovepro.net/ModuloParadas/SWParadas.asmx?WSDL')
+
+    (0..10).each do |code|
+      response = client.call(:recuperar_linea_por_entidad, message: {
+        usuario: 'WEB.UPLATENSE',
+        clave: 'PAR.SW.UPLATENSE',
+        codigoEntidadSMP: code,
+        isSublinea: false
+      })
+
+      data = response.body.dig(:recuperar_linea_por_entidad_response, :recuperar_linea_por_entidad_result)
+
+      json = JSON.parse(data)
+
+      if (json['CodigoEstado'] >= 0)
+        pp json
+      end
+
+    end
+  end
+  
   desc "fetch bus lines"
   task fetch: :environment do
-    client = Savon.client(wsdl: 'http://clswbsas.smartmovepro.net/ModuloParadas/SWParadas.asmx?WSDL')
-  
-    # pp client.operations
+    client = Savon.client(wsdl: 'http://clswbsas.smartmovepro.net/ModuloParadas/SWParadas.asmx?WSDL')  
   
     (1000..2000).each do |code|
       response = client.call(:recuperar_calles_principal_por_linea, message: {
@@ -32,8 +52,6 @@ namespace :bus_lines do
   desc "fetch bus lines main streets"
   task fetch_main_streets: :environment do
     client = Savon.client(wsdl: 'http://clswbsas.smartmovepro.net/ModuloParadas/SWParadas.asmx?WSDL')
-
-    count = 0
 
     BusLine.all.each do |bus_line|
       response = client.call(:recuperar_calles_principal_por_linea, message: {
