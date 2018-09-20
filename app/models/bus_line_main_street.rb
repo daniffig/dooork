@@ -1,0 +1,2 @@
+class BusLineMainStreet < ApplicationRecord
+end
