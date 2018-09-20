@@ -10,7 +10,15 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2018_09_20_013340) do
+ActiveRecord::Schema.define(version: 2018_09_20_015351) do
+
+  create_table "bus_line_main_streets", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
+    t.bigint "bus_line_id", null: false
+    t.bigint "main_street_id", null: false
+    t.index ["bus_line_id", "main_street_id"], name: "index_bus_line_main_streets_on_bus_line_id_and_main_street_id"
+    t.index ["bus_line_id"], name: "index_bus_line_main_streets_on_bus_line_id"
+    t.index ["main_street_id"], name: "index_bus_line_main_streets_on_main_street_id"
+  end
 
   create_table "bus_lines", options: "ENGINE=InnoDB DEFAULT CHARSET=utf8", force: :cascade do |t|
     t.string "code"

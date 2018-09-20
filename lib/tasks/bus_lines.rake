@@ -1,4 +1,12 @@
 namespace :bus_lines do
+  desc "fetch operations"
+  task fetch_operations: :environment do
+    client = Savon.client(wsdl: 'http://clswbsas.smartmovepro.net/ModuloParadas/SWParadas.asmx?WSDL')
+
+    pp client.operations
+  end
+  
+  # pp client.operations
   desc "fetch bus lines"
   task fetch: :environment do
     client = Savon.client(wsdl: 'http://clswbsas.smartmovepro.net/ModuloParadas/SWParadas.asmx?WSDL')
@@ -41,17 +49,14 @@ namespace :bus_lines do
 
       if (json['CodigoEstado'] >= 0)
         json.dig('calles').each do |street|
-          count = count + 1
-
           description = street['Descripcion'].match /\A(.+) - (.+)\z/
 
-          MainStreet.create code: street['Codigo'], name: description[1], city: description[2]
+          main_street = MainStreet.find_or_create_by! code: street['Codigo'], name: description[1], city: description[2]
+
+          bus_line.main_streets << main_street
         end
       end
     end
-
-    p count
-    p MainStreet.count
   end
 
 end
